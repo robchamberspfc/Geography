@@ -11,14 +11,22 @@
 <body>
   <br><br>
   <div class="wrapper">
-    <input type="text" id="geog" name="geog">
 
-    <button class="btn btn--primary btn--thin" onclick="getGeog()">Search</button>
-    <button class="btn btn--secondary btn--thin" onclick="reset()">Reset</button>
+    <div class="col-wrap">
+    <div class="col col--md-half col--lg-half">
+      <div class="wrapper">
+        <input type="text" id="geog" name="geog">
+        <button class="btn btn--primary btn--thin" onclick="getGeog()">Search location</button>
+        <button class="btn btn--secondary btn--thin" onclick="reset()">Reset page</button>
+      </div>
+        <br>
+      <div id="buttons"></div>
+    </div>
+    <div class="col col--md-half col--lg-half">
+        <div id="map" style="min-width: 310px; height: 600px; margin: 0 auto"></div>
+    </div>
+</div>
 
-    <div id="buttons"></div>
-
-    <div id="map" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
   </div>
 
@@ -41,46 +49,37 @@
 
   function getGeog() {
 
-    var searchurl = "http://statistics.data.gov.uk/search.jsonld?page=1&per_page=5&search="
+    var numResults = 8
+    var searchUrl = "http://statistics.data.gov.uk/search.jsonld?page=1&per_page=" + numResults + "&search="
+    var searchTerm = document.getElementById("geog").value;
 
-    var searchterm = document.getElementById("geog").value;
+    fetch(searchUrl + searchTerm, {mode: 'cors'}).then(data => data.json()).then(function (data) {
 
-    fetch(searchurl + searchterm, {mode: 'cors'}).then(data => data.json()).then(function (data) {
       return data.map(function (variations) {
         //console.log (variations)
         let button = createNode('button'),
           span = createNode('span');
+          br = createNode('br');
         button.id = variations["http://www.w3.org/2000/01/rdf-schema#label"]["0"]["@value"];
         button.name = variations["http://statistics.data.gov.uk/def/statistical-geography#officialname"]["0"]["@value"];
         button.onclick = buttonClick;
         span.innerHTML = variations["http://statistics.data.gov.uk/def/statistical-geography#officialname"]["0"]["@value"];
         append(button, span);
         append(buttons, button);
-        button.classList.add("btn");
-        button.classList.add("btn--primary");
-        button.classList.add("btn--thin");
-        // hidden.style.display = 'block';
+        append(buttons, br);
+        button.classList.add("btn"); button.classList.add("btn--primary"); button.classList.add("btn--full-width");
 
         function buttonClick() {
-
-          //console.log (this)
-
-          const map = document.getElementById('mapitem');
-
+          //const map = document.getElementById('mapitem');
           var regionID = this.id
           var name = this.name
 
           fetch("https://opendata.arcgis.com/datasets/2039e084c4e8427981514b2a7fdd077e_3.geojson", {mode: 'cors'}).then(data => data.json()).then(function (data) {
-            //console.log (data)
-            let mapitem = data.features[0];
 
+            //let mapitem = data.features[0];
             fetch("http://statistics.data.gov.uk/boundaries/" + regionID + ".json", {mode: 'cors'}).then(data2 => data2.json()).then(function (data2) {
-              //console.log (data2) temp = data2.geometry.coordinates[0] data2.geometry.coordinates = temp[0]
 
               data.features[1] = data2
-
-              //console.log(data)
-
               var temp1 = "objectid"
               var temp2 = 2
               data.features[1].properties[temp1] = temp2;
@@ -93,7 +92,6 @@
               ];
 
               Highcharts.mapChart('map', {
-
                 legend: {
                   enabled: false
                 },
@@ -106,18 +104,15 @@
                 interaction: {
                   enabled: false
                 },
-
                 mapNavigation: {
                   enabled: true,
                   buttonOptions: {
                     verticalAlign: 'bottom'
                   }
                 },
-
                 title: {
                   text: name + " (" + regionID + ")"
                 },
-
                 plotOptions: {
                   series: {
                     states: {
@@ -139,7 +134,10 @@
                   }
                 ]
               });
-            })
+            }).catch(function (error) {
+  						alert("Boundary file for this location not yet available, please select another");
+  						console.log(error)
+  					});
           })
         }
       })
