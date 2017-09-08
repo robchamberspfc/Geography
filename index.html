@@ -13,20 +13,19 @@
   <div class="wrapper">
 
     <div class="col-wrap">
-    <div class="col col--md-half col--lg-half">
-      <div class="wrapper">
-        <input type="text" id="geog" name="geog">
-        <button class="btn btn--primary btn--thin" onclick="getGeog()">Search location</button>
-        <button class="btn btn--secondary btn--thin" onclick="reset()">Reset page</button>
-      </div>
+      <div class="col col--md-half col--lg-half">
+        <div class="wrapper">
+          <input type="text" id="geog" name="geog">
+          <button class="btn btn--primary btn--thin" onclick="getGeog()">Search location</button>
+          <button class="btn btn--secondary btn--thin" onclick="reset()">Reset page</button>
+        </div>
         <br>
-      <div id="buttons"></div>
-    </div>
-    <div class="col col--md-half col--lg-half">
+        <div id="buttons"></div>
+      </div>
+      <div class="col col--md-half col--lg-half">
         <div id="map" style="min-width: 310px; height: 600px; margin: 0 auto"></div>
+      </div>
     </div>
-</div>
-
 
   </div>
 
@@ -49,7 +48,7 @@
 
   function getGeog() {
 
-    var numResults = 8
+    var numResults = 9
     var searchUrl = "http://statistics.data.gov.uk/search.jsonld?page=1&per_page=" + numResults + "&search="
     var searchTerm = document.getElementById("geog").value;
 
@@ -59,7 +58,7 @@
         //console.log (variations)
         let button = createNode('button'),
           span = createNode('span');
-          br = createNode('br');
+        br = createNode('br');
         button.id = variations["http://www.w3.org/2000/01/rdf-schema#label"]["0"]["@value"];
         button.name = variations["http://statistics.data.gov.uk/def/statistical-geography#officialname"]["0"]["@value"];
         button.onclick = buttonClick;
@@ -67,7 +66,9 @@
         append(button, span);
         append(buttons, button);
         append(buttons, br);
-        button.classList.add("btn"); button.classList.add("btn--primary"); button.classList.add("btn--full-width");
+        button.classList.add("btn");
+        button.classList.add("btn--primary");
+        button.classList.add("btn--full-width");
 
         function buttonClick() {
           //const map = document.getElementById('mapitem');
@@ -104,14 +105,18 @@
                 interaction: {
                   enabled: false
                 },
+                exporting: { enabled: false },
                 mapNavigation: {
-                  enabled: true,
-                  buttonOptions: {
-                    verticalAlign: 'bottom'
-                  }
+                  enabled: false
+                },
+                chart: {
+                    backgroundColor: '#0F8243'
                 },
                 title: {
-                  text: name + " (" + regionID + ")"
+                  text: name + " (" + regionID + ")",
+                  style: {
+                    color: 'white'
+                }
                 },
                 plotOptions: {
                   series: {
@@ -129,15 +134,15 @@
                     joinBy: [
                       'objectid', 0
                     ],
-                    color: '#ffffff',
+                    color: '#0F8243',
                     keys: ['objectid', 'value']
                   }
                 ]
               });
             }).catch(function (error) {
-  						alert("Boundary file for this location not yet available, please select another");
-  						console.log(error)
-  					});
+              alert("Boundary file for this location not yet available, please select another");
+              console.log(error)
+            });
           })
         }
       })
