@@ -58,7 +58,7 @@
     var numResults = 9
     var searchUrl = "http://statistics.data.gov.uk/search.jsonld?page=1&per_page=" + numResults + "&search="
     var searchTerm = document.getElementById("geog").value;
-    var mapBackground = "https://opendata.arcgis.com/datasets/2039e084c4e8427981514b2a7fdd077e_3.geojson"
+    var mapBackground = "https://opendata.arcgis.com/datasets/37bcb9c9e788497ea4f80543fd14c0a7_3.geojson"
     
     fetch(searchUrl + searchTerm, {mode: 'cors'}).then(data => data.json()).then(function (data) {
 
@@ -180,7 +180,7 @@
 
 
       var d = new Date(variations.description.releaseDate);
-      dd = d.getUTCDay();
+      dd = d.getDay();
       mm = d.getUTCMonth();
       yy = d.getUTCFullYear();
 
