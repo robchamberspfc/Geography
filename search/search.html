@@ -27,7 +27,7 @@
 
 
 </head>
-<body class="list" onload="getGeog()">">
+<body class="list" onload="getGeog()">
 
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MBCBVQS"
                       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -584,7 +584,8 @@ fetch(searchUrl + searchTerm, {mode: 'cors'}).then(data => data.json()).then(fun
     //console.log(variations["http://publishmydata.com/def/ontology/spatial/memberOf"]["0"]["@id"])
     
     if (variations["http://publishmydata.com/def/ontology/spatial/memberOf"]["0"]["@id"] == "http://statistics.data.gov.uk/def/geography/collection/E01") {
-      //console.log("found one")
+      console.log("found one")
+      getsearch()
     } else {
     // let button = createNode('button');
     // span = createNode('span');
@@ -599,7 +600,7 @@ fetch(searchUrl + searchTerm, {mode: 'cors'}).then(data => data.json()).then(fun
 
     let geogDataURL =  "http://statistics.data.gov.uk/resource.json?uri="
     //console.log(variations["http://statistics.data.gov.uk/def/statistical-entity#code"]["0"]["@id"])
-
+    console.log(geogDataURL + variations["http://statistics.data.gov.uk/def/statistical-entity#code"]["0"]["@id"])
     fetch(geogDataURL + variations["http://statistics.data.gov.uk/def/statistical-entity#code"]["0"]["@id"], {mode: 'cors'}).then(data => data.json()).then(function (data) {
         //console.log(data)
 
