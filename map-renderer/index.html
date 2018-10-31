@@ -1,0 +1,59 @@
+<HTML>
+
+<HEAD>
+
+    <SCRIPT>
+        window.onload = function () {
+        const domain = "http://localhost:23500"
+        fetch("query.json", {
+                mode: 'cors'
+            })
+            .then(data => data.json())
+            .then(function (data) {
+                console.log(data)
+
+                fetch(domain + "/render/svg", {
+                        mode: 'cors',
+                        method: 'post',
+                        body: JSON.stringify(data),
+                    })
+                    .then(function (response) {
+                        console.log(response.status)
+                        console.log("response");
+                        console.log(response.body.getReader)
+                        const reader = response.body.getReader();
+
+                        return new ReadableStream({
+                            start(controller) {
+                                return pump();
+
+                                function pump() {
+                                    return reader.read().then(({
+                                        done,
+                                        value
+                                    }) => {
+                                        // When no more data needs to be consumed, close the stream
+                                        if (done) {
+                                            controller.close();
+                                            return;
+                                        }
+                                        // Enqueue the next data chunk into our target stream
+                                        controller.enqueue(value);
+                                        return pump();
+                                    });
+                                }
+                            }
+                        })
+                    })
+                    .then(stream => new Response(stream))
+                    .then(response => console.log(blob))
+                    .then(blob => )
+
+            })
+        }
+        
+    </SCRIPT>
+</HEAD>
+
+
+</HTML>

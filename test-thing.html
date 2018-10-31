@@ -1,0 +1,34 @@
+<HTML>
+
+<HEAD>
+
+    <SCRIPT>
+
+        
+        window.onload = function () {
+        const domain = "http://localhost:23500"
+        fetch("https://api.dev.cmd.onsdigital.co.uk/v1/code-lists/local-authority/editions/2016/codes", {
+                mode: 'cors'
+            })
+            .then(data => data.json())
+            .then(function (data) {
+                // console.log(data.items)
+               data.items.map (function (variations) {
+                // console.log(variations.id)
+                fetch(variations.links.datasets.href , {
+                })
+                    .then(data => data.json())
+                    .then(function (data) {
+                    console.log (data.count +" : "+  data.items[0].dimension_label)
+
+                })
+               })      
+
+            })
+        }
+        
+    </SCRIPT>
+</HEAD>
+
+
+</HTML>
